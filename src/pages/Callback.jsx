@@ -64,6 +64,40 @@ export default function CallbackPage() {
                         navigate("/login");
                     }, 3000);
                 }
+            } else if (screenHint === "required_access") {
+                const currentUser = localStorage.getItem("loggedInUser");
+
+                const isUserSameAsCurrentUser = existingUser.email === currentUser.email;
+
+                if (existingUser && isUserSameAsCurrentUser) {
+                    const updatedUser = {
+                        email: existingUser.email,
+                        name: existingUser.name,
+                        password: existingUser.password,
+                        nickname: user.nickname,
+                        picture: user.picture,
+                        oauth_access: true
+                    };
+
+                    const updatedUsers = users.map((u) =>
+                        u.email === user.email ? updatedUser : u
+                    );
+
+                    localStorage.setItem("users", JSON.stringify(updatedUsers));
+                    localStorage.setItem("loggedInUser", JSON.stringify(updatedUser));
+
+                    enqueueSnackbar("Authorization succesful!.", { variant: "success"} );
+
+                    setTimeout(() => {
+                        navigate("/profile");
+                    }, 3000);
+                } else {
+                    enqueueSnackbar("The user is not the same as the logged in.", { variant: "error"} );
+
+                    setTimeout(() => {
+                        navigate("/profile");
+                    }, 3000);
+                }
             }
 
             localStorage.removeItem("auth_screen_hint");

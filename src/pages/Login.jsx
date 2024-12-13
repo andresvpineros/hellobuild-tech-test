@@ -51,9 +51,10 @@ export default function LoginPage() {
             loginWithRedirect({
                 connection: "github",
                 scope: "read:user user:email",
+                redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URI,
                 authorizationParams: {
                     screen_hint: "login",
-                    redirect_uri: `${import.meta.env.VITE_AUTH0_REDIRECT_URI}?screen_hint=login`,
+                    redirect_uri: `${import.meta.env.VITE_AUTH0_REDIRECT_URI}`,
                 },
               });
         } catch (error) {
