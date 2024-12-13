@@ -1,3 +1,29 @@
+# GitHub Repositories Manager
+
+This project is a web application that allows users to log in using GitHub OAuth, view their GitHub repositories, and manage their favorite repositories. It displays repositories in cards, provides a search feature, and allows users to mark repositories as favorites. If the user is not authenticated, they are prompted to log in with GitHub.
+
+<h2>Features </h2>
+
+- GitHub OAuth Authentication: Users can log in using GitHub to fetch their repositories.
+- Display Repositories: Users can view all their repositories in a card layout.
+- Mark Favorites: Users can mark repositories as favorites and save them to localStorage.
+- Search Repositories: Users can search repositories by name.
+- Sections: Displays repositories in two sections—All Repositories and Favorite Repositories.
+- Responsive Design: The UI is fully responsive, ensuring a great experience across devices.
+
+<h2>Images </h2>
+
+<b>1. Home page </b>
+![image](https://github.com/user-attachments/assets/7ce2ace0-0bd5-4c90-945f-d20231a1b1e4)
+
+<b>2. Login page </b>
+![image](https://github.com/user-attachments/assets/8cb6a2e5-a4b7-4b10-b76b-c51521847093)
+
+<b>3. Sign Up page </b>
+![image](https://github.com/user-attachments/assets/5116c2d3-9109-424f-967f-63dc35459a5a)
+
+<b>4. Profile page </b>
+
 # GitHub Codespaces ♥️ React
 
 Welcome to your shiny new Codespace running React! We've got everything fired up and running for you to explore React.
