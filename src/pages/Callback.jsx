@@ -13,6 +13,7 @@ export default function CallbackPage() {
 
         if (error) {
             enqueueSnackbar("Authentication failed. Please try again.", { variant: "error"} );
+            localStorage.removeItem("auth_screen_hint");
 
             setTimeout(() => {
                 navigate("/login");
@@ -22,7 +23,6 @@ export default function CallbackPage() {
 
         if (isAuthenticated) {
             const screenHint = localStorage.getItem("auth_screen_hint");
-            console.log(screenHint, 'screenHint')
 
             const users = JSON.parse(localStorage.getItem("users")) || [];
             const existingUser = users.find((u) => u.email === user.email);
@@ -30,7 +30,7 @@ export default function CallbackPage() {
             if (screenHint === "login") {
                 if (existingUser) {
                     enqueueSnackbar(`Welcome back, ${existingUser.name}!`, { variant: "success"} );
-                    localStorage.setItem("currentUser", JSON.stringify(existingUser));
+                    localStorage.setItem("loggedInUser", JSON.stringify(existingUser));
 
                     setTimeout(() => {
                         navigate("/profile");
@@ -53,7 +53,9 @@ export default function CallbackPage() {
                     users.push({
                         email: user.email,
                         name: user.name,
-                        password: user.password
+                        nickname: user.nickname,
+                        picture: user.picture,
+                        oauth_access: true
                     })
                     localStorage.setItem("users", JSON.stringify(users));
 
@@ -63,8 +65,11 @@ export default function CallbackPage() {
                     }, 3000);
                 }
             }
+
+            localStorage.removeItem("auth_screen_hint");
         } else {
             enqueueSnackbar("Authentication failed. Please try again.", { variant: "error"} );
+            localStorage.removeItem("auth_screen_hint");
 
             setTimeout(() => {
                 navigate("/login");

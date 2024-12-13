@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router";
 import * as Yup from "yup";
 import { enqueueSnackbar } from 'notistack'
 import { useAuth0 } from '@auth0/auth0-react';
+import { useState } from "react";
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
+    const [isGitHubLoginClicked, setIsGitHubLoginClicked] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -22,6 +24,8 @@ export default function LoginPage() {
             .required("Password is required"),
         }),
         onSubmit: (values) => {
+            if (isGitHubLoginClicked) return;
+
             const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
             const matchingUser = storedUsers.find(
@@ -40,6 +44,8 @@ export default function LoginPage() {
 
     const handleGitHubLogin = async () => {
         try {
+            setIsGitHubLoginClicked(true);
+
             localStorage.setItem("auth_screen_hint", "login");
 
             loginWithRedirect({
@@ -67,6 +73,7 @@ export default function LoginPage() {
                 </h1>
                 <div className="flex justify-center w-full gap-1">
                     <button
+                        type="button"
                         onClick={handleGitHubLogin}
                         className="bg-transparent p-2 border rounded-xl w-full"
                     >

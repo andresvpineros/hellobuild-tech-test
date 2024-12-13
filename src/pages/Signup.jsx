@@ -3,13 +3,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { enqueueSnackbar } from 'notistack'
 import { useAuth0 } from '@auth0/auth0-react';
+import { useState } from "react";
 
 export default function SignupPage() {
     const navigate = useNavigate();
     const { loginWithRedirect } = useAuth0();
+    const [isGitHubLoginClicked, setIsGitHubLoginClicked] = useState(false);
 
-    const GITHUB_AUTH_URL = (state) => 
-        `${import.meta.env.VITE_GITHUB_AUTH_URL}?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GITHUB_REDIRECT_URI}&scope=user&state=${state}`;    
 
     const formik = useFormik({
         initialValues: {
@@ -33,6 +33,8 @@ export default function SignupPage() {
                 .required("Please confirm your password"),
         }),
         onSubmit: (values, { setSubmitting, setFieldError }) => {
+            if (isGitHubLoginClicked) return;
+
             const { name, email, password } = values;
 
             const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
@@ -44,9 +46,10 @@ export default function SignupPage() {
             }
 
             const newUser = {
-                name: values.name,
-                email: values.email,
-                password: values.password,
+                name: name,
+                email: email,
+                password: password,
+                oauth_access: false
             };
 
             storedUsers.push(newUser);
@@ -61,6 +64,8 @@ export default function SignupPage() {
 
     const handleGitHubSignup = () => {
         try {
+            setIsGitHubLoginClicked(true);
+
             localStorage.setItem("auth_screen_hint", "signup");
 
             loginWithRedirect({
@@ -86,6 +91,7 @@ export default function SignupPage() {
                 <h1 className="text-2xl font-bold mb-4 p-2 text-center">Sign Up</h1>
                 <div className="flex justify-center w-full gap-1">
                     <button
+                        type="button"
                         onClick={handleGitHubSignup}
                         className="bg-transparent p-2 border rounded-xl w-full"
                     >
