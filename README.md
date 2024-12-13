@@ -22,7 +22,8 @@ This project is a web application that allows users to log in using GitHub OAuth
 <b>3. Sign Up page </b>
 ![image](https://github.com/user-attachments/assets/5116c2d3-9109-424f-967f-63dc35459a5a)
 
-<b>4. Profile page </b>
+<b>4. Profile page - Without access to GitHub OAuth </b>
+![image](https://github.com/user-attachments/assets/9f1cd464-ac74-4597-9e38-03db9713177a)
 
 # GitHub Codespaces ♥️ React
 
