@@ -2,9 +2,11 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router";
 import * as Yup from "yup";
 import { enqueueSnackbar } from 'notistack'
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
 
     const formik = useFormik({
         initialValues: {
@@ -27,7 +29,7 @@ export default function LoginPage() {
             );
 
             if (!matchingUser) {
-                enqueueSnackbar('Invalid credentials', { variant: "error" })
+                enqueueSnackbar('User not found', { variant: "error" })
                 return;
             }
 
@@ -35,6 +37,24 @@ export default function LoginPage() {
             navigate("/profile");
         },
     });
+
+    const handleGitHubLogin = async () => {
+        try {
+            localStorage.setItem("auth_screen_hint", "login");
+
+            loginWithRedirect({
+                connection: "github",
+                scope: "read:user user:email",
+                authorizationParams: {
+                    screen_hint: "login",
+                    redirect_uri: `${import.meta.env.VITE_AUTH0_REDIRECT_URI}?screen_hint=login`,
+                },
+              });
+        } catch (error) {
+            enqueueSnackbar('Login error', { variant: "error" })
+            console.error("Login error:", error);
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center">
@@ -47,6 +67,7 @@ export default function LoginPage() {
                 </h1>
                 <div className="flex justify-center w-full gap-1">
                     <button
+                        onClick={handleGitHubLogin}
                         className="bg-transparent p-2 border rounded-xl w-full"
                     >
                         <i className="fa-brands fa-github"></i>

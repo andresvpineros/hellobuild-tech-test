@@ -2,9 +2,14 @@ import { Link, useNavigate } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { enqueueSnackbar } from 'notistack'
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function SignupPage() {
     const navigate = useNavigate();
+    const { loginWithRedirect } = useAuth0();
+
+    const GITHUB_AUTH_URL = (state) => 
+        `${import.meta.env.VITE_GITHUB_AUTH_URL}?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GITHUB_REDIRECT_URI}&scope=user&state=${state}`;    
 
     const formik = useFormik({
         initialValues: {
@@ -47,12 +52,30 @@ export default function SignupPage() {
             storedUsers.push(newUser);
             localStorage.setItem("users", JSON.stringify(storedUsers));
             
-            enqueueSnackbar('User registered succesfuly', { variant: "success" })
+            enqueueSnackbar('User registered succesfuly', { variant: "success" });
             setTimeout(() => {
                 navigate("/login");
-            }, 3000)
+            }, 3000);
         },
     });
+
+    const handleGitHubSignup = () => {
+        try {
+            localStorage.setItem("auth_screen_hint", "signup");
+
+            loginWithRedirect({
+                connection: "github",
+                scope: "read:user user:email",
+                authorizationParams: {
+                    screen_hint: "signup",
+                    redirect_uri: `${import.meta.env.VITE_AUTH0_REDIRECT_URI}?screen_hint=signup`,
+                },
+              });
+        } catch (error) {
+            enqueueSnackbar('Signup error', { variant: "error" })
+            console.error("Signup error:", error);
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center">
@@ -63,6 +86,7 @@ export default function SignupPage() {
                 <h1 className="text-2xl font-bold mb-4 p-2 text-center">Sign Up</h1>
                 <div className="flex justify-center w-full gap-1">
                     <button
+                        onClick={handleGitHubSignup}
                         className="bg-transparent p-2 border rounded-xl w-full"
                     >
                         <i className="fa-brands fa-github"></i>
